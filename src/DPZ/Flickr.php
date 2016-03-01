@@ -144,9 +144,6 @@ class Flickr
 
         $requestParams = array_merge($requestParams, $this->getOauthParams());
 
-        if (!$this->accessToken) {
-            exit('No access token set!');
-        }
         $requestParams['oauth_token'] = $this->accessToken;
         $this->sign(self::API_ENDPOINT, $requestParams);
 

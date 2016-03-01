@@ -1,5 +1,5 @@
 {
-    "name": "dopiaza/dpzflickr",
+    "name": "timenomad/dpzflickr",
     "type": "library",
     "description": "PHP client library for Flickr.",
     "require": {
@@ -10,12 +10,5 @@
         "psr-0": {
             "DPZ": "src/"
         }  
-    },
-    "authors": [
-        {
-            "name": "David Wilkinson",
-            "homepage": "http://dopiaza.org",
-            "role": "Developer"
-        }
-    ]
+    }
 }

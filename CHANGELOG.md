@@ -1,3 +1,10 @@
+Version 1.4 - 1st March 2016
+=================================
+
+Forked by timenomad.
+* Add option to set access token, ideal when token is stored in db.
+* authenticate() method - add $is_redirect to choose between http redirect to user auth page or just have it returned (ideal when used as an API).
+
 Version 1.3 - 1st June 2014
 =================================
 
