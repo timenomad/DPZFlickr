@@ -79,6 +79,11 @@ class Flickr
     private $callback;
 
     /**
+     * @var string Token for authenticated requests
+     */
+    private $accessToken;
+
+    /**
      * @var string HTTP Method to use for API calls
      */
     private $method = 'POST';
@@ -115,6 +120,16 @@ class Flickr
     }
 
     /**
+     * Set the access token
+     *
+     * @param string $accessToken
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
+    }
+
+    /**
      * Call a Flickr API method
      *
      * @param string $method The FLickr API method name
@@ -129,7 +144,10 @@ class Flickr
 
         $requestParams = array_merge($requestParams, $this->getOauthParams());
 
-        $requestParams['oauth_token'] = $this->getOauthData(self::OAUTH_ACCESS_TOKEN);
+        if (!$this->accessToken) {
+            exit('No access token set!');
+        }
+        $requestParams['oauth_token'] = $this->accessToken;
         $this->sign(self::API_ENDPOINT, $requestParams);
 
         $response = $this->httpRequest(self::API_ENDPOINT, $requestParams);
@@ -196,8 +214,10 @@ class Flickr
      * Flickr to approve the request.
      *
      * @param string $permissions The permissions requested: read, write or delete
+     * @param bool $is_redirect Whether to redirect to auth page or return url
+     * @return bool
      */
-    public function authenticate($permissions = 'read')
+    public function authenticate($permissions = 'read', $is_redirect = false)
     {
         $ok = false;
         // First of all, check to see if we're part way through the authentication process
@@ -232,12 +252,18 @@ class Flickr
                 $this->setOauthData(self::IS_AUTHENTICATING, true);
                 $this->setOauthData(self::PERMISSIONS, $permissions);
 
-                header(sprintf('Location: %s?oauth_token=%s&perms=%s',
+                $url = sprintf('%s?oauth_token=%s&perms=%s',
                     self::AUTH_ENDPOINT,
                     $this->getOauthData(self::OAUTH_REQUEST_TOKEN),
                     $permissions
-                ));
-                exit(0);
+                );
+
+                if ($is_redirect) {
+                    header($url);
+                    exit(0);
+                } else {
+                    return $url;
+                }
             }
         }
 
